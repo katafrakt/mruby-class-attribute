@@ -67,6 +67,10 @@ module Lts
   end
 end
 
+assert 'false' do
+  assert_equal 1, 2
+end
+
 assert 'initial value is nil' do
   assert_equal ClassAttributeTest.initial, nil
 end
