@@ -25,7 +25,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.1"
+          ruby-version: "3.4"
 
       - name: Install system dependencies
         run: |
@@ -46,7 +46,7 @@ jobs:
 
       - name: Create build config
         run: |
-          cat > mruby/build_config.rb << 'EOF'
+          cat > build_config.rb << 'EOF'
           MRuby::Build.new do |conf|
             toolchain :gcc
             
@@ -54,7 +54,7 @@ jobs:
             conf.enable_test
             
             # Add your mrbgem (adjust path as needed)
-            conf.gem path: File.expand_path('../mrbgem', __dir__)
+            conf.gem File.expand_path('mrbgem', __dir__)
             
             # Enable all warnings as errors for strict testing
             conf.cc.flags << '-Wall' << '-Werror'
@@ -68,9 +68,9 @@ jobs:
         run: |
           cd mruby
           make clean
-          make -j$(nproc)
+          MRUBY_CONFIG=../build_config.rb ruby ./minirake
 
       - name: Run mruby tests
         run: |
           cd mruby
-          make test
+          MRUBY_CONFIG=../build_config.rb ruby ./minirake test
